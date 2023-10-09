@@ -1,9 +1,10 @@
 ﻿using APICatalogo.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace APICatalogo.Context
 {
-    public class APICatalogoContext : DbContext 
+    public class APICatalogoContext : IdentityDbContext 
     {
         public APICatalogoContext(DbContextOptions<APICatalogoContext> options) : base(options) { }
 
@@ -26,6 +27,9 @@ namespace APICatalogo.Context
 
             //Relacionamento um para muitos
             modelBuilder.Entity<Produto>().HasOne(a => a.Categoria).WithMany(a => a.Produtos).HasForeignKey(a => a.CategoriaId);
+
+            base.OnModelCreating(modelBuilder);
         }
+        
     }
 }

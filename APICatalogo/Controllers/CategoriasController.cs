@@ -2,9 +2,12 @@
 using APICatalogo.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace APICatalogo.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
     [ApiController]
     public class CategoriasController : ControllerBase
@@ -84,7 +87,7 @@ namespace APICatalogo.Controllers
             return Ok(categoria);
         }
 
-        [HttpDelete("{id}:int")]
+        [HttpDelete("{id:int}")]
         public ActionResult Delete(int id)
         {
             var categoria = _context.Categorias?.FirstOrDefault(a => a.CategoriaId == id);

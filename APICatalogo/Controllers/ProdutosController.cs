@@ -1,10 +1,13 @@
 ﻿using APICatalogo.Context;
 using APICatalogo.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace APICatalogo.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("[controller]")]
     [ApiController]
     public class ProdutosController : ControllerBase
@@ -16,10 +19,10 @@ namespace APICatalogo.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Produto>> Get()
+        [HttpGet]// /produtos
+        public async Task<ActionResult<IEnumerable<Produto>>> GetAsync()
         {
-            var produtos = _context.Produtos?.AsNoTracking().ToList();
+            var produtos = await _context.Produtos!.AsNoTracking().ToListAsync();
 
             if (produtos is null)
             {
@@ -29,10 +32,11 @@ namespace APICatalogo.Controllers
             return Ok(produtos);
         }
 
-        [HttpGet("{id:int}", Name = "ObterProduto")]
-        public ActionResult<Produto> GetProduto(int id)
+        [HttpGet("{id:int:min(1)}", Name = "ObterProduto")] // /produtos/id
+        public async Task<ActionResult<Produto>> GetProduto(int id)
         {
-            var produto = _context.Produtos?.AsNoTracking().FirstOrDefault(a => a.ProdutoId == id);
+
+            var produto = await _context.Produtos!.AsNoTracking().FirstOrDefaultAsync(a => a.ProdutoId == id);
 
             if (produto is null)
             {
